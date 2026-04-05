@@ -1,0 +1,37 @@
+{
+  "name": "stellarmesh",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @stellarmesh/shared && npm run build -w @stellarmesh/payment-router && npm run build -w @stellarmesh/facilitator && npm run build -w @stellarmesh/api && npm run build -w @stellarmesh/mcp-server && npm run build -w @stellarmesh/demo-search-service && npm run build -w @stellarmesh/demo-weather-service && npm run build -w @stellarmesh/demo-inference-service && npm run build -w @stellarmesh/dashboard",
+    "dev:api": "npm run dev -w @stellarmesh/api",
+    "dev:facilitator": "npm run dev -w @stellarmesh/facilitator",
+    "dev:mcp": "npm run dev -w @stellarmesh/mcp-server",
+    "dev:dashboard": "npm run dev -w @stellarmesh/dashboard",
+    "dev:search": "npm run dev -w @stellarmesh/demo-search-service",
+    "dev:weather": "npm run dev -w @stellarmesh/demo-weather-service",
+    "dev:inference": "npm run dev -w @stellarmesh/demo-inference-service",
+    "bootstrap:testnet": "tsx scripts/bootstrap-testnet.ts",
+    "typecheck": "npm run typecheck -w @stellarmesh/shared && npm run typecheck -w @stellarmesh/payment-router && npm run typecheck -w @stellarmesh/facilitator && npm run typecheck -w @stellarmesh/api && npm run typecheck -w @stellarmesh/mcp-server && npm run typecheck -w @stellarmesh/demo-search-service && npm run typecheck -w @stellarmesh/demo-weather-service && npm run typecheck -w @stellarmesh/demo-inference-service && npm run typecheck -w @stellarmesh/dashboard",
+    "test": "npm run test -w @stellarmesh/shared && npm run test -w @stellarmesh/payment-router && npm run test -w @stellarmesh/facilitator && npm run test -w @stellarmesh/api && npm run test -w @stellarmesh/mcp-server && npm run test -w @stellarmesh/demo-search-service && npm run test -w @stellarmesh/demo-weather-service && npm run test -w @stellarmesh/demo-inference-service && npm run test -w @stellarmesh/dashboard"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^14.6.1",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.7"
+  }
+}

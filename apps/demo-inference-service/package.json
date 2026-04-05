@@ -1,0 +1,20 @@
+{
+  "name": "@stellarmesh/demo-inference-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node -e \"console.log('demo-inference-service: no tests configured')\""
+  },
+  "dependencies": {
+    "@x402/core": "2.6.0",
+    "@x402/express": "2.6.0",
+    "@x402/stellar": "2.6.0",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0"
+  }
+}

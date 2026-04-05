@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+.env
+.env.local
+.env.testnet.local
+apps/dashboard/dist
+contracts/target
+data/*.runtime.json
+data/testnet-bootstrap.json
+refs
+logs

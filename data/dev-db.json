@@ -1,0 +1,925 @@
+{
+  "services": [
+    {
+      "id": "svc-search-brave",
+      "name": "Atlas Search",
+      "description": "Paid web research and ranked search snippets.",
+      "endpointUrl": "http://localhost:4101/x402/search",
+      "priceUsd": 0.02,
+      "capabilityTags": [
+        "web-search",
+        "research",
+        "citations"
+      ],
+      "paymentMethods": [
+        "x402",
+        "mpp"
+      ],
+      "ownerAddress": "GDSEARCHOWNEREXAMPLE",
+      "stakeUsd": 5,
+      "active": true,
+      "metadata": {
+        "network": "stellar:testnet",
+        "demo": false,
+        "endpoints": {
+          "x402": "http://localhost:4101/x402/search",
+          "mppChannel": "http://localhost:4101/mpp/channel/search"
+        }
+      }
+    },
+    {
+      "id": "svc-weather-pulse",
+      "name": "Sky Pulse",
+      "description": "Paid weather and forecast feed for agent workflows.",
+      "endpointUrl": "http://localhost:4102/x402/weather",
+      "priceUsd": 0.01,
+      "capabilityTags": [
+        "weather",
+        "forecast",
+        "data-feed"
+      ],
+      "paymentMethods": [
+        "x402",
+        "mpp"
+      ],
+      "ownerAddress": "GDWEATHEROWNEREXAMPLE",
+      "stakeUsd": 5,
+      "active": true,
+      "metadata": {
+        "network": "stellar:testnet",
+        "demo": false,
+        "endpoints": {
+          "x402": "http://localhost:4102/x402/weather",
+          "mppCharge": "http://localhost:4102/mpp/charge/weather"
+        }
+      }
+    },
+    {
+      "id": "svc-inference-haiku",
+      "name": "Mesh Inference",
+      "description": "Paid lightweight text inference and summarization endpoint.",
+      "endpointUrl": "http://localhost:4103/x402/infer",
+      "priceUsd": 0.03,
+      "capabilityTags": [
+        "inference",
+        "summarization",
+        "classification"
+      ],
+      "paymentMethods": [
+        "x402",
+        "mpp"
+      ],
+      "ownerAddress": "GDINFERENCEOWNEREXAMPLE",
+      "stakeUsd": 5,
+      "active": true,
+      "metadata": {
+        "network": "stellar:testnet",
+        "demo": false,
+        "endpoints": {
+          "x402": "http://localhost:4103/x402/infer"
+        }
+      }
+    }
+  ],
+  "reputation": {
+    "svc-search-brave": {
+      "serviceId": "svc-search-brave",
+      "successfulSettlements": 17,
+      "failedSettlements": 0,
+      "score": 100,
+      "uptime": 1,
+      "totalVolumeUsd": 0.34,
+      "updatedAt": "2026-04-02T17:16:33.276Z"
+    },
+    "svc-weather-pulse": {
+      "serviceId": "svc-weather-pulse",
+      "successfulSettlements": 10,
+      "failedSettlements": 1,
+      "score": 98,
+      "uptime": 0.909,
+      "totalVolumeUsd": 0.1,
+      "updatedAt": "2026-04-02T17:17:35.641Z"
+    },
+    "svc-inference-haiku": {
+      "serviceId": "svc-inference-haiku",
+      "successfulSettlements": 7,
+      "failedSettlements": 0,
+      "score": 95,
+      "uptime": 1,
+      "totalVolumeUsd": 0.21,
+      "updatedAt": "2026-04-02T17:19:21.838Z"
+    }
+  },
+  "activity": [
+    {
+      "id": "1775150361841-5f7kye",
+      "createdAt": "2026-04-02T17:19:21.841Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-inference-haiku",
+      "status": "success",
+      "amountUsd": 0.03,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150361834-2yyp44",
+      "createdAt": "2026-04-02T17:19:21.834Z",
+      "type": "payment.settled",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference-2",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-inference-haiku-live-inference-2-1."
+    },
+    {
+      "id": "1775150361829-8us46l",
+      "createdAt": "2026-04-02T17:19:21.829Z",
+      "type": "service.hired",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference-2",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Mesh Inference completed a paid request."
+    },
+    {
+      "id": "1775150347749-zd8zqm",
+      "createdAt": "2026-04-02T17:19:07.749Z",
+      "type": "payment.routed",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference-2",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Payment router selected X402 for Mesh Inference.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150305903-sja1cu",
+      "createdAt": "2026-04-02T17:18:25.903Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-inference-haiku",
+      "status": "success",
+      "amountUsd": 0.03,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150305893-sejp41",
+      "createdAt": "2026-04-02T17:18:25.893Z",
+      "type": "payment.settled",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-inference-haiku-live-inference-2."
+    },
+    {
+      "id": "1775150305889-rusok9",
+      "createdAt": "2026-04-02T17:18:25.889Z",
+      "type": "service.hired",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Mesh Inference completed a paid request."
+    },
+    {
+      "id": "1775150293584-6k9938",
+      "createdAt": "2026-04-02T17:18:13.584Z",
+      "type": "payment.routed",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Payment router selected X402 for Mesh Inference.",
+      "metadata": {
+        "callCount": 2,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150255653-bsu74m",
+      "createdAt": "2026-04-02T17:17:35.653Z",
+      "type": "payment.routed",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "live-inference",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Payment router selected X402 for Mesh Inference.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150255644-s25k94",
+      "createdAt": "2026-04-02T17:17:35.644Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-weather-pulse",
+      "status": "success",
+      "amountUsd": 0.01,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150255636-6z4px3",
+      "createdAt": "2026-04-02T17:17:35.636Z",
+      "type": "payment.settled",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Settlement recorded with MPP reference mpp-svc-weather-pulse-live-weather."
+    },
+    {
+      "id": "1775150255633-md3nvi",
+      "createdAt": "2026-04-02T17:17:35.633Z",
+      "type": "service.hired",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Sky Pulse completed a paid request."
+    },
+    {
+      "id": "1775150250652-irvsbk",
+      "createdAt": "2026-04-02T17:17:30.652Z",
+      "type": "payment.routed",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Payment router selected MPP for Sky Pulse.",
+      "metadata": {
+        "callCount": 4,
+        "reason": "Repeated calls crossed the session threshold, so MPP is cheaper than per-request x402."
+      }
+    },
+    {
+      "id": "1775150250643-7tt1dd",
+      "createdAt": "2026-04-02T17:17:30.643Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-weather-pulse",
+      "status": "success",
+      "amountUsd": 0.01,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150250635-e0mn4i",
+      "createdAt": "2026-04-02T17:17:30.635Z",
+      "type": "payment.settled",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-weather-pulse-live-weather-3."
+    },
+    {
+      "id": "1775150250631-fp7o0m",
+      "createdAt": "2026-04-02T17:17:30.631Z",
+      "type": "service.hired",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Sky Pulse completed a paid request."
+    },
+    {
+      "id": "1775150240822-ghz769",
+      "createdAt": "2026-04-02T17:17:20.822Z",
+      "type": "payment.routed",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Payment router selected X402 for Sky Pulse.",
+      "metadata": {
+        "callCount": 3,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150240812-8y6uiv",
+      "createdAt": "2026-04-02T17:17:20.812Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-weather-pulse",
+      "status": "success",
+      "amountUsd": 0.01,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150240804-yxaoxs",
+      "createdAt": "2026-04-02T17:17:20.804Z",
+      "type": "payment.settled",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-weather-pulse-live-weather-2."
+    },
+    {
+      "id": "1775150240800-49h6jz",
+      "createdAt": "2026-04-02T17:17:20.800Z",
+      "type": "service.hired",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Sky Pulse completed a paid request."
+    },
+    {
+      "id": "1775150226545-etuwgr",
+      "createdAt": "2026-04-02T17:17:06.545Z",
+      "type": "payment.routed",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Payment router selected X402 for Sky Pulse.",
+      "metadata": {
+        "callCount": 2,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150226494-elhml4",
+      "createdAt": "2026-04-02T17:17:06.494Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-weather-pulse",
+      "status": "success",
+      "amountUsd": 0.01,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150226486-iatlrs",
+      "createdAt": "2026-04-02T17:17:06.486Z",
+      "type": "payment.settled",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-weather-pulse-live-weather-1."
+    },
+    {
+      "id": "1775150226481-pf4iva",
+      "createdAt": "2026-04-02T17:17:06.481Z",
+      "type": "service.hired",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Sky Pulse completed a paid request."
+    },
+    {
+      "id": "1775150212406-yka5m1",
+      "createdAt": "2026-04-02T17:16:52.406Z",
+      "type": "payment.routed",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "live-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Payment router selected X402 for Sky Pulse.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150193277-9k9ahy",
+      "createdAt": "2026-04-02T17:16:33.277Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150193275-qnwfc6",
+      "createdAt": "2026-04-02T17:16:33.275Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with MPP reference mpp-svc-search-brave-live-hybrid."
+    },
+    {
+      "id": "1775150193273-l80evy",
+      "createdAt": "2026-04-02T17:16:33.273Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775150191873-7bpbjt",
+      "createdAt": "2026-04-02T17:16:31.873Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 5,
+        "reason": "Active MPP channel already exists for this session."
+      }
+    },
+    {
+      "id": "1775150191863-6h9qc4",
+      "createdAt": "2026-04-02T17:16:31.863Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150191854-f0prug",
+      "createdAt": "2026-04-02T17:16:31.854Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with MPP reference mpp-svc-search-brave-live-hybrid."
+    },
+    {
+      "id": "1775150191850-k45n7o",
+      "createdAt": "2026-04-02T17:16:31.850Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775150190297-ozackf",
+      "createdAt": "2026-04-02T17:16:30.297Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 4,
+        "reason": "Repeated calls crossed the session threshold, so MPP is cheaper than per-request x402."
+      }
+    },
+    {
+      "id": "1775150190285-a8zgth",
+      "createdAt": "2026-04-02T17:16:30.285Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150190277-qmzvwf",
+      "createdAt": "2026-04-02T17:16:30.277Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-live-hybrid-3."
+    },
+    {
+      "id": "1775150190272-nbgn96",
+      "createdAt": "2026-04-02T17:16:30.272Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775150175455-kgg90s",
+      "createdAt": "2026-04-02T17:16:15.455Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 3,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150175444-rthhac",
+      "createdAt": "2026-04-02T17:16:15.444Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150175435-y2zbiy",
+      "createdAt": "2026-04-02T17:16:15.435Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-live-hybrid-2."
+    },
+    {
+      "id": "1775150175431-s3km1a",
+      "createdAt": "2026-04-02T17:16:15.431Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775150161804-56j5wf",
+      "createdAt": "2026-04-02T17:16:01.804Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 2,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150161754-3chxuv",
+      "createdAt": "2026-04-02T17:16:01.754Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150161747-0ukvpb",
+      "createdAt": "2026-04-02T17:16:01.747Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-live-hybrid-1."
+    },
+    {
+      "id": "1775150161743-jg16mh",
+      "createdAt": "2026-04-02T17:16:01.743Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775150148597-j8msjg",
+      "createdAt": "2026-04-02T17:15:48.597Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-hybrid",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775150006516-uctdnr",
+      "createdAt": "2026-04-02T17:13:26.516Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 5,
+        "reason": "Active MPP channel already exists for this session."
+      }
+    },
+    {
+      "id": "1775150005117-4iiymm",
+      "createdAt": "2026-04-02T17:13:25.117Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 4,
+        "reason": "Repeated calls crossed the session threshold, so MPP is cheaper than per-request x402."
+      }
+    },
+    {
+      "id": "1775150005108-qey7up",
+      "createdAt": "2026-04-02T17:13:25.108Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775150005102-tgjxpc",
+      "createdAt": "2026-04-02T17:13:25.102Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-live-final-3."
+    },
+    {
+      "id": "1775150005099-fwzf2l",
+      "createdAt": "2026-04-02T17:13:25.099Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775149991174-xs7r0z",
+      "createdAt": "2026-04-02T17:13:11.175Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 3,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775149991120-4q0unm",
+      "createdAt": "2026-04-02T17:13:11.120Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775149991112-k9hyhb",
+      "createdAt": "2026-04-02T17:13:11.112Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-live-final-2."
+    },
+    {
+      "id": "1775149991107-2mhvl1",
+      "createdAt": "2026-04-02T17:13:11.107Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775149977743-917mo8",
+      "createdAt": "2026-04-02T17:12:57.743Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 2,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775149960657-3ru4j0",
+      "createdAt": "2026-04-02T17:12:40.657Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775149960649-ugxgnz",
+      "createdAt": "2026-04-02T17:12:40.649Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-live-final-1."
+    },
+    {
+      "id": "1775149960645-3lssn2",
+      "createdAt": "2026-04-02T17:12:40.645Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775149944414-irj4oi",
+      "createdAt": "2026-04-02T17:12:24.414Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-final",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775149548213-16l19g",
+      "createdAt": "2026-04-02T17:05:48.213Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-session-b",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 4,
+        "reason": "Repeated calls crossed the session threshold, so MPP is cheaper than per-request x402."
+      }
+    },
+    {
+      "id": "1775149548194-id127d",
+      "createdAt": "2026-04-02T17:05:48.194Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-session-b",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 3,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775149548172-m94zik",
+      "createdAt": "2026-04-02T17:05:48.172Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-session-b",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 2,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775149548145-u9w3tt",
+      "createdAt": "2026-04-02T17:05:48.145Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-session-b",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775149547766-4aphtj",
+      "createdAt": "2026-04-02T17:05:47.766Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "live-session-a",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775146889739-ib3ovs",
+      "createdAt": "2026-04-02T16:21:29.739Z",
+      "type": "reputation.updated",
+      "serviceId": "svc-search-brave",
+      "status": "success",
+      "amountUsd": 0.02,
+      "message": "Reputation updated after success settlement."
+    },
+    {
+      "id": "1775146889735-fwwmxs",
+      "createdAt": "2026-04-02T16:21:29.735Z",
+      "type": "payment.settled",
+      "serviceId": "svc-search-brave",
+      "sessionId": "demo-session",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Settlement recorded with X402 reference x402-svc-search-brave-demo-session-1."
+    },
+    {
+      "id": "1775146889733-poytdj",
+      "createdAt": "2026-04-02T16:21:29.733Z",
+      "type": "service.hired",
+      "serviceId": "svc-search-brave",
+      "sessionId": "demo-session",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Atlas Search completed a paid request."
+    },
+    {
+      "id": "1775146889639-97xqdo",
+      "createdAt": "2026-04-02T16:21:29.639Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "demo-session",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@stellarmesh/facilitator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node -e \"console.log('facilitator: no tests configured')\""
+  },
+  "dependencies": {
+    "@x402/core": "2.6.0",
+    "@x402/stellar": "2.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0"
+  }
+}
