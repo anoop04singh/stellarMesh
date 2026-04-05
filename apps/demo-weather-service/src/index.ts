@@ -96,6 +96,8 @@ app.post("/mpp/charge/weather", async (req, res) => {
   res.send(await receipt.text());
 });
 
-app.listen(4102, () => {
-  console.log("Sky Pulse real service listening on http://localhost:4102");
+const port = Number(process.env.PORT ?? 4102);
+
+app.listen(port, () => {
+  console.log(`Sky Pulse real service listening on http://localhost:${port}`);
 });

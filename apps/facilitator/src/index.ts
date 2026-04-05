@@ -59,7 +59,7 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-const port = Number(process.env.FACILITATOR_PORT ?? 4022);
+const port = Number(process.env.PORT ?? process.env.FACILITATOR_PORT ?? 4022);
 app.listen(port, () => {
   console.log(`StellarMesh facilitator listening on http://localhost:${port}`);
 });

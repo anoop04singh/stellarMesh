@@ -107,6 +107,8 @@ app.post("/mpp/channel/search", async (req, res) => {
   res.send(await receipt.text());
 });
 
-app.listen(4101, () => {
-  console.log("Atlas Search real service listening on http://localhost:4101");
+const port = Number(process.env.PORT ?? 4101);
+
+app.listen(port, () => {
+  console.log(`Atlas Search real service listening on http://localhost:${port}`);
 });

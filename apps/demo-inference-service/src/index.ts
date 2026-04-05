@@ -45,6 +45,8 @@ app.post("/x402/infer", (req, res) => {
   });
 });
 
-app.listen(4103, () => {
-  console.log("Mesh Inference real service listening on http://localhost:4103");
+const port = Number(process.env.PORT ?? 4103);
+
+app.listen(port, () => {
+  console.log(`Mesh Inference real service listening on http://localhost:${port}`);
 });
