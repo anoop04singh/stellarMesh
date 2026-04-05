@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 type Metrics = {
   serviceCount: number;
@@ -43,6 +43,25 @@ export function App() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [activity, setActivity] = useState<Activity[]>([]);
+  const [formState, setFormState] = useState({
+    name: "",
+    description: "",
+    endpointUrl: "",
+    priceUsd: "0.02",
+    capabilityTags: "search,data",
+    ownerAddress: "",
+    network: "stellar:testnet",
+    stakeUsd: "0",
+    supportsX402: true,
+    supportsMpp: false,
+    x402Endpoint: "",
+    mppChargeEndpoint: "",
+    mppChannelEndpoint: "",
+  });
+  const [submitState, setSubmitState] = useState<{
+    status: "idle" | "submitting" | "success" | "error";
+    message: string;
+  }>({ status: "idle", message: "" });
 
   useEffect(() => {
     let active = true;
@@ -73,6 +92,105 @@ export function App() {
   const featuredServices = services.slice(0, 3);
   const catalogServices = services.slice(0, 6);
   const liveCalls = activity.filter(item => item.type === "service.hired").slice(0, 3);
+
+  async function refreshNetwork() {
+    const [metricsResult, servicesResult, activityResult] = await Promise.all([
+      getJson<{ metrics: Metrics }>("/metrics"),
+      getJson<{ services: Service[] }>("/services"),
+      getJson<{ activity: Activity[] }>("/activity"),
+    ]);
+    setMetrics(metricsResult.metrics);
+    setServices(servicesResult.services);
+    setActivity(activityResult.activity.slice(0, 10));
+  }
+
+  async function handleRegisterService(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitState({ status: "submitting", message: "Verifying payment endpoints..." });
+
+    const capabilityTags = formState.capabilityTags
+      .split(",")
+      .map(tag => tag.trim())
+      .filter(Boolean);
+
+    const paymentMethods = [
+      ...(formState.supportsX402 ? (["x402"] as const) : []),
+      ...(formState.supportsMpp ? (["mpp"] as const) : []),
+    ];
+
+    if (paymentMethods.length === 0) {
+      setSubmitState({ status: "error", message: "Select at least one payment method." });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/services/register`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formState.name,
+          description: formState.description,
+          endpointUrl: formState.endpointUrl,
+          priceUsd: Number(formState.priceUsd),
+          capabilityTags,
+          paymentMethods,
+          ownerAddress: formState.ownerAddress,
+          stakeUsd: Number(formState.stakeUsd),
+          metadata: {
+            network: formState.network,
+            endpoints: {
+              ...(formState.supportsX402 && formState.x402Endpoint ? { x402: formState.x402Endpoint } : {}),
+              ...(formState.supportsMpp && formState.mppChargeEndpoint
+                ? { mppCharge: formState.mppChargeEndpoint }
+                : {}),
+              ...(formState.supportsMpp && formState.mppChannelEndpoint
+                ? { mppChannel: formState.mppChannelEndpoint }
+                : {}),
+            },
+          },
+        }),
+      });
+
+      const result = (await response.json()) as { error?: string; service?: Service };
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Registration failed.");
+      }
+
+      setSubmitState({
+        status: "success",
+        message: `${result.service?.name ?? formState.name} verified and listed successfully.`,
+      });
+      setFormState({
+        name: "",
+        description: "",
+        endpointUrl: "",
+        priceUsd: "0.02",
+        capabilityTags: "search,data",
+        ownerAddress: "",
+        network: "stellar:testnet",
+        stakeUsd: "0",
+        supportsX402: true,
+        supportsMpp: false,
+        x402Endpoint: "",
+        mppChargeEndpoint: "",
+        mppChannelEndpoint: "",
+      });
+      await refreshNetwork();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Registration failed.";
+      setSubmitState({ status: "error", message });
+    }
+  }
+
+  function updateForm<K extends keyof typeof formState>(key: K, value: (typeof formState)[K]) {
+    setFormState(current => ({
+      ...current,
+      [key]: value,
+    }));
+  }
 
   return (
     <div className="shell">
@@ -380,6 +498,178 @@ check_reputation(serviceId)`}</code>
             </article>
           </div>
         </section>
+
+        <section id="register" className="section">
+          <div className="section-heading">
+            <p className="micro-label">Provider onboarding</p>
+            <h2>List a service only after the network proves it can really charge.</h2>
+            <p>
+              Registration now verifies that your endpoint actually returns a valid x402 or MPP
+              payment challenge before StellarMesh accepts it into the catalog.
+            </p>
+          </div>
+
+          <div className="register-layout">
+            <form className="register-panel" onSubmit={handleRegisterService}>
+              <div className="register-grid">
+                <Field label="Service name">
+                  <input
+                    value={formState.name}
+                    onChange={event => updateForm("name", event.target.value)}
+                    placeholder="Nova OCR"
+                    required
+                  />
+                </Field>
+
+                <Field label="Owner address">
+                  <input
+                    value={formState.ownerAddress}
+                    onChange={event => updateForm("ownerAddress", event.target.value)}
+                    placeholder="G..."
+                    required
+                  />
+                </Field>
+
+                <Field label="Primary endpoint">
+                  <input
+                    value={formState.endpointUrl}
+                    onChange={event => updateForm("endpointUrl", event.target.value)}
+                    placeholder="https://provider.example.com/x402/ocr"
+                    required
+                  />
+                </Field>
+
+                <Field label="Price in USDC">
+                  <input
+                    type="number"
+                    min="0.001"
+                    step="0.001"
+                    value={formState.priceUsd}
+                    onChange={event => updateForm("priceUsd", event.target.value)}
+                    required
+                  />
+                </Field>
+
+                <Field label="Capability tags">
+                  <input
+                    value={formState.capabilityTags}
+                    onChange={event => updateForm("capabilityTags", event.target.value)}
+                    placeholder="ocr,documents,extraction"
+                    required
+                  />
+                </Field>
+
+                <Field label="Stake">
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={formState.stakeUsd}
+                    onChange={event => updateForm("stakeUsd", event.target.value)}
+                  />
+                </Field>
+
+                <Field label="Description" className="field-span-2">
+                  <textarea
+                    value={formState.description}
+                    onChange={event => updateForm("description", event.target.value)}
+                    placeholder="Paid OCR extraction for PDFs and images."
+                    rows={4}
+                    required
+                  />
+                </Field>
+
+                <Field label="Payment methods" className="field-span-2">
+                  <div className="toggle-row">
+                    <label className="toggle-pill">
+                      <input
+                        type="checkbox"
+                        checked={formState.supportsX402}
+                        onChange={event => updateForm("supportsX402", event.target.checked)}
+                      />
+                      <span>x402</span>
+                    </label>
+                    <label className="toggle-pill">
+                      <input
+                        type="checkbox"
+                        checked={formState.supportsMpp}
+                        onChange={event => updateForm("supportsMpp", event.target.checked)}
+                      />
+                      <span>MPP</span>
+                    </label>
+                  </div>
+                </Field>
+
+                {formState.supportsX402 ? (
+                  <Field label="x402 endpoint" className="field-span-2">
+                    <input
+                      value={formState.x402Endpoint}
+                      onChange={event => updateForm("x402Endpoint", event.target.value)}
+                      placeholder="https://provider.example.com/x402/ocr"
+                    />
+                  </Field>
+                ) : null}
+
+                {formState.supportsMpp ? (
+                  <>
+                    <Field label="MPP charge endpoint">
+                      <input
+                        value={formState.mppChargeEndpoint}
+                        onChange={event => updateForm("mppChargeEndpoint", event.target.value)}
+                        placeholder="https://provider.example.com/mpp/charge/ocr"
+                      />
+                    </Field>
+                    <Field label="MPP channel endpoint">
+                      <input
+                        value={formState.mppChannelEndpoint}
+                        onChange={event => updateForm("mppChannelEndpoint", event.target.value)}
+                        placeholder="https://provider.example.com/mpp/channel/ocr"
+                      />
+                    </Field>
+                  </>
+                ) : null}
+              </div>
+
+              <div className="register-actions">
+                <button className="button button-solid" type="submit" disabled={submitState.status === "submitting"}>
+                  {submitState.status === "submitting" ? "Verifying..." : "Register Service"}
+                </button>
+                <p
+                  className={`submit-message ${
+                    submitState.status === "error"
+                      ? "submit-message-error"
+                      : submitState.status === "success"
+                        ? "submit-message-success"
+                        : ""
+                  }`}
+                >
+                  {submitState.message || "The API will reject endpoints that are not actually payment protected."}
+                </p>
+              </div>
+            </form>
+
+            <aside className="register-notes">
+              <article className="note-card">
+                <p className="pane-label">Validation rules</p>
+                <h3>No valid payment challenge, no listing.</h3>
+                <ul className="note-list">
+                  <li>x402 endpoints must return HTTP 402 with a `payment-required` header.</li>
+                  <li>MPP charge endpoints must return HTTP 402 with `method="stellar"` and `intent="charge"`.</li>
+                  <li>MPP channel endpoints must return HTTP 402 with `method="stellar"` and `intent="channel"`.</li>
+                </ul>
+              </article>
+
+              <article className="note-card">
+                <p className="pane-label">Operator note</p>
+                <h3>Registration is now safer for agents.</h3>
+                <p>
+                  The marketplace verifies payment protection at registration time so discovery does
+                  not surface fake, free, or broken services as paid providers.
+                </p>
+              </article>
+            </aside>
+          </div>
+        </section>
       </main>
     </div>
   );
@@ -431,5 +721,16 @@ function RouteCard({ title, detail }: { title: string; detail: string }) {
       <span>{title}</span>
       <p>{detail}</p>
     </article>
+  );
+}
+
+function Field(
+  { label, className, children }: { label: string; className?: string; children: ReactNode },
+) {
+  return (
+    <label className={`field ${className ?? ""}`.trim()}>
+      <span>{label}</span>
+      {children}
+    </label>
   );
 }

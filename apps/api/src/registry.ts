@@ -1,12 +1,19 @@
 import {
   computeRankingScore,
   type DiscoveryFilters,
+  nowIso,
   type ReputationRecord,
   type ServiceRecord,
   slugify,
 } from "@stellarmesh/shared";
 import { z } from "zod";
 import { appendActivity, readDb, writeDb } from "./db.js";
+
+const endpointSchema = z.object({
+  x402: z.string().url().optional(),
+  mppCharge: z.string().url().optional(),
+  mppChannel: z.string().url().optional(),
+});
 
 const serviceSchema = z.object({
   name: z.string().min(3),
@@ -17,7 +24,13 @@ const serviceSchema = z.object({
   paymentMethods: z.array(z.enum(["x402", "mpp"])).min(1),
   ownerAddress: z.string().min(8),
   stakeUsd: z.number().min(0).default(0),
-  metadata: z.record(z.string(), z.unknown()).default({}),
+  metadata: z.object({
+    network: z.string().optional(),
+    demo: z.boolean().optional(),
+    endpoints: endpointSchema.default({}),
+  }).catch({
+    endpoints: {},
+  }),
 });
 
 export async function listServices(filters: DiscoveryFilters) {
@@ -50,10 +63,21 @@ export async function getService(serviceId: string) {
 export async function registerService(input: unknown): Promise<ServiceRecord> {
   const payload = serviceSchema.parse(input);
   const db = await readDb();
+  const id = `svc-${slugify(payload.name)}`;
+
+  if (db.services.some(service => service.id === id)) {
+    throw new Error(`A service with id ${id} is already registered.`);
+  }
+
+  const verification = await verifyServiceEndpoints(payload);
   const service: ServiceRecord = {
-    id: `svc-${slugify(payload.name)}`,
+    id,
     active: true,
     ...payload,
+    metadata: {
+      ...payload.metadata,
+      verification,
+    },
   };
   db.services.push(service);
   db.reputation[service.id] = {
@@ -71,8 +95,124 @@ export async function registerService(input: unknown): Promise<ServiceRecord> {
     serviceId: service.id,
     status: "success",
     message: `${service.name} registered in the marketplace.`,
+    metadata: {
+      verification,
+    },
   });
   return service;
+}
+
+type RegistrationPayload = z.infer<typeof serviceSchema>;
+
+type VerificationRecord = {
+  checkedAt: string;
+  endpoints: {
+    x402?: string;
+    mppCharge?: string;
+    mppChannel?: string;
+  };
+};
+
+async function verifyServiceEndpoints(payload: RegistrationPayload): Promise<VerificationRecord> {
+  const endpoints = payload.metadata.endpoints ?? {};
+  const verified: VerificationRecord["endpoints"] = {};
+
+  if (payload.paymentMethods.includes("x402")) {
+    const x402Url = endpoints.x402 ?? payload.endpointUrl;
+    await verifyX402Endpoint(x402Url);
+    verified.x402 = x402Url;
+  }
+
+  if (payload.paymentMethods.includes("mpp")) {
+    const mppChannelUrl = endpoints.mppChannel;
+    const mppChargeUrl = endpoints.mppCharge;
+
+    if (!mppChannelUrl && !mppChargeUrl) {
+      throw new Error(
+        "Services that declare MPP support must provide metadata.endpoints.mppCharge or metadata.endpoints.mppChannel.",
+      );
+    }
+
+    if (mppChannelUrl) {
+      await verifyMppEndpoint(mppChannelUrl, "channel");
+      verified.mppChannel = mppChannelUrl;
+    }
+
+    if (mppChargeUrl) {
+      await verifyMppEndpoint(mppChargeUrl, "charge");
+      verified.mppCharge = mppChargeUrl;
+    }
+  }
+
+  return {
+    checkedAt: nowIso(),
+    endpoints: verified,
+  };
+}
+
+async function verifyX402Endpoint(url: string): Promise<void> {
+  const response = await probeEndpoint(url);
+
+  if (response.status !== 402) {
+    throw new Error(`Declared x402 endpoint ${url} did not return HTTP 402.`);
+  }
+
+  const paymentRequired = response.headers.get("payment-required");
+  if (!paymentRequired) {
+    throw new Error(`Declared x402 endpoint ${url} did not include a payment-required header.`);
+  }
+}
+
+async function verifyMppEndpoint(url: string, expectedIntent: "charge" | "channel"): Promise<void> {
+  const response = await probeEndpoint(url);
+
+  if (response.status !== 402) {
+    throw new Error(`Declared MPP endpoint ${url} did not return HTTP 402.`);
+  }
+
+  const authenticate = response.headers.get("www-authenticate");
+  if (!authenticate) {
+    throw new Error(`Declared MPP endpoint ${url} did not include a WWW-Authenticate header.`);
+  }
+
+  const method = extractChallengeAttribute(authenticate, "method");
+  const intent = extractChallengeAttribute(authenticate, "intent");
+
+  if (method !== "stellar") {
+    throw new Error(`Declared MPP endpoint ${url} did not advertise method="stellar".`);
+  }
+
+  if (intent !== expectedIntent) {
+    throw new Error(`Declared MPP endpoint ${url} did not advertise intent="${expectedIntent}".`);
+  }
+}
+
+async function probeEndpoint(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+
+  try {
+    return await fetch(url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        probe: true,
+      }),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new Error(`Could not verify endpoint ${url}: ${reason}`);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function extractChallengeAttribute(header: string, key: string): string | null {
+  const match = new RegExp(`${key}="([^"]+)"`, "i").exec(header);
+  return match?.[1] ?? null;
 }
 
 export async function updateReputation(
