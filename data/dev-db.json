@@ -4,7 +4,7 @@
       "id": "svc-search-brave",
       "name": "Atlas Search",
       "description": "Paid web research and ranked search snippets.",
-      "endpointUrl": "http://localhost:4101/x402/search",
+      "endpointUrl": "https://stellarmeshsearch.onrender.com/x402/search",
       "priceUsd": 0.02,
       "capabilityTags": [
         "web-search",
@@ -22,8 +22,8 @@
         "network": "stellar:testnet",
         "demo": false,
         "endpoints": {
-          "x402": "http://localhost:4101/x402/search",
-          "mppChannel": "http://localhost:4101/mpp/channel/search"
+          "x402": "https://stellarmeshsearch.onrender.com/x402/search",
+          "mppChannel": "https://stellarmeshsearch.onrender.com/mpp/channel/search"
         }
       }
     },
@@ -31,7 +31,7 @@
       "id": "svc-weather-pulse",
       "name": "Sky Pulse",
       "description": "Paid weather and forecast feed for agent workflows.",
-      "endpointUrl": "http://localhost:4102/x402/weather",
+      "endpointUrl": "https://stellarmeshweather.onrender.com/x402/weather",
       "priceUsd": 0.01,
       "capabilityTags": [
         "weather",
@@ -49,8 +49,8 @@
         "network": "stellar:testnet",
         "demo": false,
         "endpoints": {
-          "x402": "http://localhost:4102/x402/weather",
-          "mppCharge": "http://localhost:4102/mpp/charge/weather"
+          "x402": "https://stellarmeshweather.onrender.com/x402/weather",
+          "mppCharge": "https://stellarmeshweather.onrender.com/mpp/charge/weather"
         }
       }
     },
@@ -58,7 +58,7 @@
       "id": "svc-inference-haiku",
       "name": "Mesh Inference",
       "description": "Paid lightweight text inference and summarization endpoint.",
-      "endpointUrl": "http://localhost:4103/x402/infer",
+      "endpointUrl": "https://stellarmeshinference.onrender.com/x402/infer",
       "priceUsd": 0.03,
       "capabilityTags": [
         "inference",
@@ -76,7 +76,7 @@
         "network": "stellar:testnet",
         "demo": false,
         "endpoints": {
-          "x402": "http://localhost:4103/x402/infer"
+          "x402": "https://stellarmeshinference.onrender.com/x402/infer"
         }
       }
     }
