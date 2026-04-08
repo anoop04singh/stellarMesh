@@ -1,5 +1,8 @@
 # StellarMesh
 
+<img width="1920" height="1080" alt="banner" src="https://github.com/user-attachments/assets/065bbb4a-b618-404d-ae2c-eb6a89e2f1e9" />
+
+
 StellarMesh is a discovery, onboarding, and access layer for paid agent services on Stellar.
 
 It helps humans and autonomous agents:
