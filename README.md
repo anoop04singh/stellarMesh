@@ -1,5 +1,8 @@
 # StellarMesh
 
+<img width="1920" height="1080" alt="banner" src="https://github.com/user-attachments/assets/065bbb4a-b618-404d-ae2c-eb6a89e2f1e9" />
+
+
 StellarMesh is a discovery, onboarding, and access layer for paid agent services on Stellar.
 
 It helps humans and autonomous agents:
@@ -10,10 +13,6 @@ It helps humans and autonomous agents:
 - register new paid services through a verified onboarding flow
 - use the network through HTTP or MCP
 
-StellarMesh is not the wallet custodian and not the merchant of record. Agents pay providers directly from their own Stellar wallets. StellarMesh is the marketplace and discovery layer.
-
-## Product boundary
-
 What StellarMesh does:
 
 - indexes and ranks services
@@ -22,11 +21,6 @@ What StellarMesh does:
 - exposes MCP tools for agents
 - maintains reputation snapshots and marketplace activity
 
-What StellarMesh does not do:
-
-- hold agent wallet keys
-- pay providers on the agent's behalf
-- proxy every paid call through a centralized buyer wallet
 
 ## What is in this repo
 
@@ -451,18 +445,6 @@ console.log(JSON.stringify(result, null, 2));
 '@ | node --input-type=module -
 ```
 
-This test proves an agent-side wallet-aware client can pay the provider directly. It is not the marketplace API buying on the agent's behalf.
-
-## Dashboard
-
-The dashboard is intentionally human-facing. It should communicate:
-
-- what services exist
-- how agents connect
-- how providers list services
-- how direct wallet-based payment works
-
-It should not imply that StellarMesh centrally purchases services for agents.
 
 ## Deployed URLs
 
