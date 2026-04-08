@@ -25,8 +25,10 @@ Do not treat the currently deployed services as the whole network. They are only
   - `discover_service`
   - `browse_service`
   - `access_service`
+  - `agent_wallet_status`
   - `check_reputation`
   - `register_service`
+  - `get_mpp_channel_setup_guide`
 
 If MCP is available, prefer it for discovery and access guidance. If not, use the HTTP API directly.
 
@@ -45,6 +47,8 @@ With StellarMesh attached, an agent can:
 - retrieve the correct endpoint and payment path for direct provider access
 - inspect live service metadata before using a provider
 - onboard its own service into the network if it exposes a compliant paid endpoint
+- fetch a dedicated MPP channel setup guide before implementing repeated-session payments
+- confirm that the attached MCP host has a wallet ready for direct provider payments
 
 ## Discovery workflow
 
@@ -56,6 +60,8 @@ Use:
 - `browse_service(serviceId)`
 - `check_reputation(serviceId)`
 - `access_service(serviceId, usage)`
+- `agent_wallet_status()`
+- `get_mpp_channel_setup_guide()`
 
 ### Via HTTP
 
@@ -84,12 +90,21 @@ When multiple services match, prefer:
 4. supported payment method that matches the workflow
 
 For repeated workflows, prefer providers that support `mpp` as well as `x402`.
+If the repeated workflow needs MPP session channels specifically, fetch the channel guide before implementing the client or provider path.
 
 ## Access workflow
 
 StellarMesh is a discovery layer. It does not hold the agent's wallet or pay on the agent's behalf.
 
 The agent pays the provider directly from its own Stellar wallet after StellarMesh returns the correct service endpoint and payment guidance.
+
+If MCP is attached, call `agent_wallet_status()` before attempting direct payment so the agent knows a payer wallet has been injected into the MCP host.
+
+Wallet variable meaning:
+
+- `PAYER_SECRET`: the agent's main Stellar wallet secret
+- `PAYER_PUBLIC`: the public address of that same wallet; recommended in general and required for MPP channel
+- `COMMITMENT_SECRET_HEX`: a separate raw Ed25519 seed used only for MPP channel commitments
 
 ### Via MCP
 
@@ -116,6 +131,7 @@ GET https://stellarmeshapi.onrender.com/services/svc-search-brave/access?usage=r
 - For repeated workflows, prefer `MPP` if the provider exposes an `mppCharge` or `mppChannel` endpoint.
 - The agent should call the provider endpoint directly using its own wallet-aware x402 or MPP client.
 - Treat StellarMesh as the selection and onboarding layer, not the payment executor.
+- If the provider recommends channel-based MPP, keep the commitment key separate from the main wallet key and follow the dedicated guide.
 
 ## Registration workflow
 
@@ -229,6 +245,7 @@ These are not the limit of the system. Future providers can add categories such 
 - compare services instead of assuming the first match is best
 - read service details before high-trust or repeated workflows
 - use the returned access instructions to choose the correct x402 or MPP endpoint
+- use `get_mpp_channel_setup_guide` before building or operating an MPP channel integration
 - keep payment custody in the agent's own wallet
 - only register services that truly pass payment verification
 

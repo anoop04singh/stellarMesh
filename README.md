@@ -152,8 +152,10 @@ Tools:
 - `discover_service`
 - `browse_service`
 - `access_service`
+- `agent_wallet_status`
 - `check_reputation`
 - `register_service`
+- `get_mpp_channel_setup_guide`
 
 Recommended use:
 
@@ -161,6 +163,77 @@ Recommended use:
 2. `browse_service`
 3. `access_service`
 4. call the provider directly from the agent's own wallet-aware client
+
+## Attach StellarMesh MCP to your agent
+
+Repository:
+
+- [github.com/anoop04singh/stellarMesh](https://github.com/anoop04singh/stellarMesh)
+
+Steps:
+
+1. Clone the repository.
+
+```powershell
+git clone https://github.com/anoop04singh/stellarMesh.git
+cd stellarMesh
+```
+
+2. Install dependencies.
+
+```powershell
+cmd /c npm install
+```
+
+3. Build the MCP server.
+
+```powershell
+cmd /c npm run build -w @stellarmesh/mcp-server
+```
+
+4. Point the MCP process at the live marketplace API.
+
+```powershell
+$env:STELLARMESH_API_URL="https://stellarmeshapi.onrender.com"
+```
+
+5. Pass the agent wallet from your `.env` into the MCP host:
+
+```powershell
+$env:PAYER_SECRET="YOUR_AGENT_WALLET_SECRET"
+$env:PAYER_PUBLIC="YOUR_AGENT_WALLET_PUBLIC"
+$env:COMMITMENT_SECRET_HEX="YOUR_MPP_COMMITMENT_SECRET_HEX"
+$env:STELLAR_RPC_URL="https://soroban-testnet.stellar.org"
+```
+
+Notes:
+
+- `PAYER_PUBLIC` is the public address of the same Stellar wallet used by `PAYER_SECRET`. It is recommended for all agent setups and required for MPP channel flows.
+- `COMMITMENT_SECRET_HEX` is only required when the agent will use `MPP channel`. It is not needed for plain `x402` or `MPP charge`.
+
+Notes:
+
+- `PAYER_PUBLIC` is the public address of the same Stellar wallet used by `PAYER_SECRET`. It is recommended for all agent setups and required for MPP channel flows.
+- `COMMITMENT_SECRET_HEX` is only required when the agent will use `MPP channel`. It is not needed for plain `x402` or `MPP charge`.
+
+6. Add the built server to your MCP-compatible host:
+   - command: `node`
+   - args: absolute path to `apps/mcp-server/dist/index.js`
+
+7. Restart the host and confirm these tools are available:
+   - `discover_service`
+   - `browse_service`
+   - `access_service`
+   - `agent_wallet_status`
+   - `check_reputation`
+   - `register_service`
+   - `get_mpp_channel_setup_guide`
+
+8. Run `agent_wallet_status` to confirm the wallet is available for direct provider payments.
+
+9. Optionally attach these skills so the agent understands StellarMesh and MPP channels immediately:
+   - `.codex/skills/stellarmesh-agent/SKILL.md`
+   - `.codex/skills/stellarmesh-mpp-channel/SKILL.md`
 
 ## Agent model
 
@@ -173,6 +246,8 @@ Agents should use StellarMesh like this:
 5. consume the provider response
 
 That keeps payment custody with the agent while letting StellarMesh stay focused on discovery and onboarding.
+
+If an agent needs repeated-session payments, use `get_mpp_channel_setup_guide` or the companion MPP skill to set up channel-based payments correctly.
 
 ## Local setup
 
@@ -243,6 +318,58 @@ It needs:
 ### MCP
 
 - `STELLARMESH_API_URL`
+- `PAYER_SECRET`
+- `PAYER_PUBLIC`
+- `STELLAR_RPC_URL`
+- `COMMITMENT_SECRET_HEX` only if the agent will use `MPP channel`
+
+### How to generate `COMMITMENT_SECRET_HEX`
+
+`COMMITMENT_SECRET_HEX` is a dedicated raw Ed25519 seed for MPP channel commitments. It is not the same as the normal Stellar wallet secret string.
+
+Generate it with Node:
+
+```powershell
+@'
+import { Keypair } from "@stellar/stellar-sdk";
+
+const keypair = Keypair.random();
+console.log("COMMITMENT_SECRET_HEX=" + keypair.rawSecretKey().toString("hex"));
+console.log("COMMITMENT_PUBLIC_HEX=" + keypair.rawPublicKey().toString("hex"));
+'@ | node --input-type=module -
+```
+
+Use the outputs like this:
+
+- agent or client keeps `COMMITMENT_SECRET_HEX`
+- provider stores `COMMITMENT_PUBLIC_HEX`
+- do not reuse the main Stellar wallet key as the commitment key
+- `PAYER_SECRET`
+- `PAYER_PUBLIC`
+- `STELLAR_RPC_URL`
+- `COMMITMENT_SECRET_HEX` only if the agent will use `MPP channel`
+
+### How to generate `COMMITMENT_SECRET_HEX`
+
+`COMMITMENT_SECRET_HEX` is a dedicated raw Ed25519 seed for MPP channel commitments. It is not the same as the normal Stellar wallet secret string.
+
+Generate it with Node:
+
+```powershell
+@'
+import { Keypair } from "@stellar/stellar-sdk";
+
+const keypair = Keypair.random();
+console.log("COMMITMENT_SECRET_HEX=" + keypair.rawSecretKey().toString("hex"));
+console.log("COMMITMENT_PUBLIC_HEX=" + keypair.rawPublicKey().toString("hex"));
+'@ | node --input-type=module -
+```
+
+Use the outputs like this:
+
+- agent or client keeps `COMMITMENT_SECRET_HEX`
+- provider stores `COMMITMENT_PUBLIC_HEX`
+- do not reuse the main Stellar wallet key as the commitment key
 
 ### Dashboard
 

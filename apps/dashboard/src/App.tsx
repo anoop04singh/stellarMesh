@@ -10,6 +10,8 @@ type Activity = { id: string; message: string; createdAt: string; paymentMethod?
 
 const apiBaseUrl = import.meta.env.VITE_STELLARMESH_API_URL ?? "http://localhost:4000";
 const skillDownloadUrl = "/skills/stellarmesh-agent-skill.md";
+const mppSkillDownloadUrl = "/skills/stellarmesh-mpp-channel-skill.md";
+const githubRepoUrl = "https://github.com/anoop04singh/stellarMesh";
 
 async function getJson<T>(pathname: string): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${pathname}`);
@@ -39,7 +41,7 @@ export function App() {
   const [services, setServices] = useState<Service[]>([]);
   const [activity, setActivity] = useState<Activity[]>([]);
   const [activeTab, setActiveTab] = useState<"catalog" | "routing" | "dashboard">("catalog");
-  const [agentTab, setAgentTab] = useState<"overview" | "skill" | "api">("overview");
+  const [agentTab, setAgentTab] = useState<"overview" | "skill" | "mpp" | "api">("overview");
   const [registerTab, setRegisterTab] = useState<"overview" | "requirements" | "form">("overview");
   const [formState, setFormState] = useState({
     name: "", description: "", endpointUrl: "", priceUsd: "0.02", capabilityTags: "search,data",
@@ -174,14 +176,14 @@ export function App() {
         <section className="hero-section">
           <div className="hero-copy">
             <p className="micro-label animate-fade-up animate-delay-1">Autonomous agent service network</p>
-            <h1 className="animate-fade-up animate-delay-2">Agents discover.<br />Agents pay.<br />Services deliver.</h1>
+            <h1 className="animate-fade-up animate-delay-2">Discovery for paid agent services on Stellar.</h1>
             <p className="hero-lede animate-fade-up animate-delay-3">
-              StellarMesh is a discovery layer for paid agent services on Stellar. Humans can browse
-              a live marketplace, providers can join with verified x402 or MPP endpoints, and agents
-              can discover, compare, and access services using their own wallets.
+              StellarMesh is an open marketplace for paid agent services. Browse live capabilities,
+              connect an agent over HTTP or MCP, and onboard new providers with verified x402 or MPP
+              payment endpoints.
             </p>
             <div className="hero-actions animate-fade-up animate-delay-4">
-              <a className="button button-warm" href="#agent-access">Connect Your Agent</a>
+              <a className="button button-warm" href="#agent-access">Connect an Agent</a>
               <a className="button button-ghost" href="#services">Browse Discovery</a>
             </div>
           </div>
@@ -192,8 +194,8 @@ export function App() {
               <div className="shot-toolbar"><span /><span /><span /></div>
               <div className="shot-grid">
                 <div className="shot-pane">
-                  <p className="pane-label">Live network</p>
-                  <h2>Paid services, ranked and ready for both humans and agents.</h2>
+                  <p className="pane-label">Live marketplace</p>
+                  <h2>Paid services ranked by capability, price, and trust.</h2>
                   <div className="mock-service-list">
                     {featuredServices.map(service => (
                       <article key={service.id} className="mock-service-card">
@@ -207,11 +209,11 @@ export function App() {
                   </div>
                 </div>
                 <div className="shot-pane">
-                  <p className="pane-label">Network roles</p>
+                  <p className="pane-label">How it works</p>
                   <div className="route-stack">
-                    <RouteCard title="Discovery" detail="Search by capability, price, and trust signals." />
-                    <RouteCard title="Payments" detail="Providers expose x402 or MPP endpoints that agents pay directly." />
-                    <RouteCard title="Agents" detail="Expose the network over HTTP and MCP." />
+                    <RouteCard title="Discover" detail="Search by capability, price, payment method, and reputation." />
+                    <RouteCard title="Access" detail="Fetch direct provider endpoints and payment instructions." />
+                    <RouteCard title="Integrate" detail="Connect agents over HTTP or MCP and let providers join the network." />
                   </div>
                 </div>
               </div>
@@ -222,31 +224,31 @@ export function App() {
         <div ref={networkSection.ref} id="network" className="section" style={{ opacity: networkSection.inView ? 1 : 0, transform: networkSection.inView ? "translateY(0)" : "translateY(28px)", transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)" }}>
           <div className="section-heading">
             <p className="micro-label">The network</p>
-            <h2>The service layer for agent commerce on Stellar.</h2>
+            <h2>An open discovery layer for agent-to-service commerce.</h2>
             <p>
-              StellarMesh gives agents and humans one place to discover paid services, evaluate trust,
-              and access provider endpoints over Stellar-native payment rails. Providers can join the network, list
-              new capabilities, and become instantly available through the same shared interface.
+              StellarMesh gives humans and autonomous agents one shared interface for service discovery,
+              provider evaluation, access instructions, and onboarding. Agents bring their own wallets.
+              Providers bring their own paid APIs. StellarMesh connects the two.
             </p>
           </div>
           <div className="value-grid">
-            <ValueCard title="For humans" body="A discovery surface for browsing live paid services and understanding what the network can do." delay={0} />
-            <ValueCard title="For providers" body="A registration and verification flow that makes joining the network feel operational, not manual." delay={80} />
-            <ValueCard title="For agents" body="A capability layer for discovery, selection, hiring, and trust evaluation through one interface." delay={160} />
-            <ValueCard title="For the ecosystem" body="A system that can expand to new categories without changing the market model." delay={240} />
+            <ValueCard title="Browse" body="A human-facing marketplace for exploring live paid services and the categories already available." delay={0} />
+            <ValueCard title="Connect" body="A clean HTTP and MCP surface that makes the network usable by existing agent stacks." delay={80} />
+            <ValueCard title="List" body="A verification-backed onboarding flow for providers exposing x402 or MPP endpoints." delay={160} />
+            <ValueCard title="Expand" body="A network model designed for many providers and categories, not a fixed set of demo APIs." delay={240} />
           </div>
         </div>
 
         <div ref={servicesSection.ref} id="services" className="section" style={{ opacity: servicesSection.inView ? 1 : 0, transform: servicesSection.inView ? "translateY(0)" : "translateY(28px)", transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)" }}>
           <div className="section-heading">
             <p className="micro-label">Marketplace</p>
-            <h2>Browse the live StellarMesh marketplace.</h2>
-            <p>Explore active services, understand how agents reach them, and watch the network update in real time.</p>
+            <h2>Browse the live service marketplace.</h2>
+            <p>Explore available capabilities, understand the payment paths providers support, and monitor live network activity.</p>
           </div>
           <div className="section-tabs">
             {(["catalog", "routing", "dashboard"] as const).map(tab => (
               <button key={tab} className={`tab-button ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
-                {tab === "catalog" ? "Service Catalog" : tab === "routing" ? "Payment Flows" : "Live Activity"}
+                {tab === "catalog" ? "Catalog" : tab === "routing" ? "Access Model" : "Network Activity"}
               </button>
             ))}
           </div>
@@ -256,12 +258,12 @@ export function App() {
               <div className="catalog-topline">
                 <article className="catalog-summary">
                   <p className="pane-label">Live capabilities</p>
-                  <h3>Capabilities already available on the network.</h3>
+                  <h3>Capabilities available right now.</h3>
                   <div className="tag-row">{liveCapabilities.map(tag => <span key={tag} className="tag-pill">{tag}</span>)}</div>
                 </article>
                 <article className="catalog-summary">
                   <p className="pane-label">Open categories</p>
-                  <h3>Service types providers can add next.</h3>
+                  <h3>Categories providers can add next.</h3>
                   <div className="tag-row">{futureCapabilities.map(tag => <span key={tag} className="tag-pill tag-pill-muted">{tag}</span>)}</div>
                 </article>
               </div>
@@ -293,20 +295,20 @@ export function App() {
             <div className="agent-grid" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
               <article className="agent-panel">
                 <p className="pane-label">Routing model</p>
-                <h3>How agents access providers after discovery.</h3>
+                <h3>How agents move from discovery to direct access.</h3>
                 <div className="route-timeline">
                   <TimelineStep step="1" title="Discover" body="Search by capability, price, and payment support." />
-                  <TimelineStep step="2" title="Choose a path" body="Use x402 for one-off access or MPP when the provider supports repeated workflows." />
-                  <TimelineStep step="3" title="Pay from the agent wallet" body="The agent calls the provider directly and completes payment from its own wallet." />
+                  <TimelineStep step="2" title="Get access instructions" body="Read the provider endpoints and choose x402, MPP charge, or MPP channel." />
+                  <TimelineStep step="3" title="Pay directly" body="The agent calls the provider from its own wallet-aware client." />
                 </div>
               </article>
               <article className="agent-panel">
-                <p className="pane-label">Why it matters</p>
-                <h3>StellarMesh is the discovery layer, not the wallet custodian.</h3>
+                <p className="pane-label">Payment model</p>
+                <h3>Wallet custody stays with the agent.</h3>
                 <div className="route-stack">
-                  <RouteCard title="x402" detail="Best for one-off requests where an agent pays per call." />
-                  <RouteCard title="MPP Charge" detail="Useful when a provider supports repeated paid access without a persistent channel." />
-                  <RouteCard title="MPP Channel" detail="Useful for longer-running agent-to-service relationships." />
+                  <RouteCard title="x402" detail="Best for straightforward per-request payments." />
+                  <RouteCard title="MPP Charge" detail="Useful for wallet-native MPP payments without opening a session channel." />
+                  <RouteCard title="MPP Channel" detail="Built for repeated agent-to-provider usage in one funded session." />
                 </div>
               </article>
             </div>
@@ -317,8 +319,8 @@ export function App() {
               <section className="dashboard-panel dashboard-hero-panel">
                 <div className="dashboard-hero-copy">
                   <p className="pane-label"><span className="live-dot" />Network status</p>
-                  <h3>Live metrics from the open service network.</h3>
-                  <p>Monitor active services, historical settlements, and reputation signals from one place.</p>
+                  <h3>Live metrics from the service network.</h3>
+                  <p>Track listed services, settlement history, and reputation signals across the marketplace.</p>
                 </div>
                 <div className="metric-grid">
                   <MetricCard label="Active Services" value={metrics?.serviceCount ?? 0} />
@@ -328,7 +330,7 @@ export function App() {
                 </div>
               </section>
               <section className="dashboard-panel spotlight-panel">
-                <div className="panel-header"><div><p className="pane-label">Payment access</p><h3>How agents move from discovery to direct provider access.</h3></div></div>
+                <div className="panel-header"><div><p className="pane-label">Access pattern</p><h3>From service discovery to direct provider calls.</h3></div></div>
                 <div className="route-timeline">
                   <TimelineStep step="1" title="Inspect the service" body="Read metadata, endpoints, and reputation." />
                   <TimelineStep step="2" title="Use the right endpoint" body="Pick x402, MPP charge, or MPP channel based on the workflow." />
@@ -336,7 +338,7 @@ export function App() {
                 </div>
               </section>
               <section className="dashboard-panel feed-panel">
-                <div className="panel-header"><div><p className="pane-label"><span className="live-dot" />Recent activity</p><h3>New registrations, paid calls, and settlement updates.</h3></div></div>
+                <div className="panel-header"><div><p className="pane-label"><span className="live-dot" />Recent activity</p><h3>Listings, access events, and settlement signals.</h3></div></div>
                 <ul className="activity-feed">
                   {activity.map((item, index) => (
                     <li key={item.id} className="activity-item" style={{ animationDelay: `${index * 40}ms` }}>
@@ -347,7 +349,7 @@ export function App() {
                 </ul>
               </section>
               <section className="dashboard-panel call-panel">
-                <div className="panel-header"><div><p className="pane-label">Historical settlements</p><h3>Recent paid executions recorded in the network.</h3></div></div>
+                <div className="panel-header"><div><p className="pane-label">Network history</p><h3>Recent paid activity recorded across providers.</h3></div></div>
                 <div className="call-list">
                   {liveCalls.length > 0 ? liveCalls.map(item => (
                     <article key={item.id} className="call-card">
@@ -369,13 +371,13 @@ export function App() {
         <div ref={agentSection.ref} id="agent-access" className="section" style={{ opacity: agentSection.inView ? 1 : 0, transform: agentSection.inView ? "translateY(0)" : "translateY(28px)", transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)" }}>
           <div className="section-heading">
             <p className="micro-label">For agents</p>
-            <h2>Connect any agent to StellarMesh in a way it can actually use.</h2>
-            <p>Give the agent a clear operating model, a reusable skill file, and direct access over API or MCP so it can discover, browse, and access services while paying from its own wallet.</p>
+            <h2>Connect any agent to the StellarMesh network.</h2>
+            <p>Use HTTP, MCP, and reusable skill files to make an agent discovery-aware, payment-aware, and ready to work with providers across the marketplace.</p>
           </div>
           <div className="section-tabs">
-            {(["overview", "skill", "api"] as const).map(tab => (
+            {(["overview", "skill", "mpp", "api"] as const).map(tab => (
               <button key={tab} className={`tab-button ${agentTab === tab ? "active" : ""}`} onClick={() => setAgentTab(tab)}>
-                {tab === "overview" ? "Getting Started" : tab === "skill" ? "Skill File" : "API & MCP"}
+                {tab === "overview" ? "Getting Started" : tab === "skill" ? "Skill Files" : tab === "mpp" ? "MPP Channels" : "API & MCP"}
               </button>
             ))}
           </div>
@@ -383,19 +385,22 @@ export function App() {
             <div className="agent-grid" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
               <article className="agent-panel">
                 <p className="pane-label">Setup steps</p>
-                <h3>How to make an agent network-aware.</h3>
+                <h3>How to make an agent marketplace-aware.</h3>
                 <ol className="step-list">
+                  <li>Clone the StellarMesh repository and build the MCP server.</li>
                   <li>Point the agent or tool host at `https://stellarmeshapi.onrender.com`.</li>
-                  <li>Instruct the agent to search the marketplace before choosing a provider.</li>
-                  <li>Use `access_service` or `GET /services/:id/access` to get the right provider endpoint.</li>
+                  <li>Pass the agent wallet into the MCP host with `PAYER_SECRET`, `PAYER_PUBLIC`, `COMMITMENT_SECRET_HEX`, and `STELLAR_RPC_URL`.</li>
+                  <li>Attach the StellarMesh skill so discovery happens before provider selection.</li>
+                  <li>Use `access_service` or `GET /services/:id/access` to obtain the direct provider endpoint.</li>
                   <li>Let the agent complete x402 or MPP payment from its own wallet.</li>
                 </ol>
               </article>
               <article className="agent-panel">
                 <p className="pane-label">Capabilities</p>
-                <h3>What an attached agent can do.</h3>
+                <h3>What an attached agent can do across the network.</h3>
                 <div className="capability-list">
                   <CapabilityRow title="Discover services" body="Search by capability, budget, and payment support." />
+                  <CapabilityRow title="Use a wallet" body="Read MCP wallet status and pay providers from the agent's configured Stellar wallet." />
                   <CapabilityRow title="Access providers" body="Get the right provider endpoint and payment path without hardcoding vendors." />
                   <CapabilityRow title="Evaluate trust" body="Read ranking, reputation, and recent network activity." />
                   <CapabilityRow title="Register services" body="List the agent's own paid capability when it exposes a compliant endpoint." />
@@ -406,10 +411,10 @@ export function App() {
           {agentTab === "skill" ? (
             <div className="agent-grid" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
               <article className="agent-panel">
-                <p className="pane-label">Skill file</p>
+                <p className="pane-label">Core skill</p>
                 <h3>Give the agent a ready-made StellarMesh operating guide.</h3>
                 <p className="agent-note">
-                  The StellarMesh skill file teaches an agent how to discover services, compare options,
+                  The StellarMesh skill teaches an agent how to discover services, compare providers,
                   retrieve access instructions, and register its own service into the network.
                 </p>
                 <div className="hero-actions">
@@ -420,13 +425,42 @@ export function App() {
 /skills/stellarmesh-agent-skill.md`}</code></pre>
               </article>
               <article className="agent-panel">
-                <p className="pane-label">How to use it</p>
-                <h3>Attach the file, then let the agent use the network.</h3>
+                <p className="pane-label">Repository setup</p>
+                <h3>Attach the MCP server and the skill file together.</h3>
                 <ol className="step-list">
-                  <li>Download the Markdown file from this page.</li>
-                  <li>Add it to your agent's project instructions or skills directory.</li>
-                  <li>Tell the agent to use the StellarMesh skill whenever it needs external paid capabilities.</li>
-                  <li>Let the agent discover first, then access providers through API or MCP.</li>
+                  <li>Clone <a href={githubRepoUrl} target="_blank" rel="noreferrer">the StellarMesh repository</a>.</li>
+                  <li>Build `apps/mcp-server` and point it to `https://stellarmeshapi.onrender.com`.</li>
+                  <li>Pass the agent wallet env vars into the MCP host so the agent can pay providers directly.</li>
+                  <li>Add the Markdown skill file to the agent's skills directory or project instructions.</li>
+                  <li>Tell the agent to discover first, then access providers through HTTP or MCP.</li>
+                </ol>
+              </article>
+            </div>
+          ) : null}
+          {agentTab === "mpp" ? (
+            <div className="agent-grid" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
+              <article className="agent-panel">
+                <p className="pane-label">MPP channel guide</p>
+                <h3>Use the dedicated channel setup skill for repeated sessions.</h3>
+                <p className="agent-note">
+                  The MPP channel skill covers commitment keys, channel contracts, deposits, provider verification,
+                  client setup, persistence, and close flow so an agent can implement repeated-session payments correctly.
+                </p>
+                <div className="hero-actions">
+                  <a className="button button-solid" href={mppSkillDownloadUrl} download>Download MPP Skill</a>
+                  <a className="button button-ghost" href={mppSkillDownloadUrl} target="_blank" rel="noreferrer">Preview Markdown</a>
+                </div>
+                <pre className="code-block"><code>{`.codex/skills/stellarmesh-mpp-channel/SKILL.md
+/skills/stellarmesh-mpp-channel-skill.md`}</code></pre>
+              </article>
+              <article className="agent-panel">
+                <p className="pane-label">How to use it</p>
+                <h3>Choose the right payment path before building.</h3>
+                <ol className="step-list">
+                  <li>Use x402 for one-off requests and MPP charge for one-off MPP payments.</li>
+                  <li>Use MPP channel only when the same agent will call the same provider repeatedly.</li>
+                  <li>Call `get_mpp_channel_setup_guide` in MCP or attach the skill file before implementation.</li>
+                  <li>Keep the commitment key separate from the main wallet key and persist the highest valid channel state.</li>
                 </ol>
               </article>
             </div>
@@ -435,7 +469,7 @@ export function App() {
             <div className="agent-grid" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
               <article className="agent-panel">
                 <p className="pane-label">HTTP</p>
-                <h3>Use the marketplace directly.</h3>
+                <h3>Use the marketplace directly over HTTP.</h3>
                 <pre className="code-block"><code>{`GET ${apiBaseUrl}/services?capability=web-search
 GET ${apiBaseUrl}/services/:id
 GET ${apiBaseUrl}/services/:id/access`}</code></pre>
@@ -446,8 +480,11 @@ GET ${apiBaseUrl}/services/:id/access`}</code></pre>
                 <pre className="code-block"><code>{`discover_service(capability, maxPrice)
 browse_service(serviceId)
 access_service(serviceId, usage)
-check_reputation(serviceId)`}</code></pre>
-                <p className="agent-note">Point the MCP server at the deployed API, then instruct the agent to browse StellarMesh before selecting a provider.</p>
+agent_wallet_status()
+check_reputation(serviceId)
+register_service(...)
+get_mpp_channel_setup_guide()`}</code></pre>
+                <p className="agent-note">Point the MCP server at the deployed API, inject the agent wallet through env vars, then let the agent confirm wallet readiness, discover providers, fetch access instructions, and pull the MPP guide when it needs repeated-session payments.</p>
               </article>
             </div>
           ) : null}
@@ -456,8 +493,8 @@ check_reputation(serviceId)`}</code></pre>
         <div ref={registerSection.ref} id="register" className="section" style={{ opacity: registerSection.inView ? 1 : 0, transform: registerSection.inView ? "translateY(0)" : "translateY(28px)", transition: "opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)" }}>
           <div className="section-heading">
             <p className="micro-label">For providers</p>
-            <h2>List your service on StellarMesh with clear, verifiable steps.</h2>
-            <p>Providers should be able to understand the integration requirements, verify compliance, and publish a new service into the network without guessing how the protocol works.</p>
+            <h2>List a paid service with clear, verifiable steps.</h2>
+            <p>Understand the integration requirements, publish the right payment endpoints, and submit a listing that agents can discover and use immediately.</p>
           </div>
           <div className="section-tabs">
             {(["overview", "requirements", "form"] as const).map(tab => (
@@ -470,7 +507,7 @@ check_reputation(serviceId)`}</code></pre>
             <div className="register-layout" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
               <article className="register-panel register-summary-panel">
                 <p className="pane-label">Listing flow</p>
-                <h3>From service endpoint to live marketplace listing.</h3>
+                <h3>From provider endpoint to live marketplace listing.</h3>
                 <ol className="step-list">
                   <li>Deploy a paid service with stable JSON inputs and outputs.</li>
                   <li>Protect the endpoint with x402, MPP, or both using the default Stellar facilitator or your own instance.</li>
@@ -481,7 +518,7 @@ check_reputation(serviceId)`}</code></pre>
               <aside className="register-notes">
                 <article className="note-card">
                   <p className="pane-label">What providers publish</p>
-                  <h3>Each listing becomes part of the shared network catalog.</h3>
+                  <h3>Each listing becomes part of the shared service catalog.</h3>
                   <ul className="note-list">
                     <li>Service name, description, price, and capability tags.</li>
                     <li>Supported payment methods and callable endpoints.</li>
@@ -496,7 +533,7 @@ check_reputation(serviceId)`}</code></pre>
             <div className="register-layout" style={{ animation: "fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both" }}>
               <article className="register-panel register-summary-panel">
                 <p className="pane-label">Protocol checks</p>
-                <h3>Your service must pass verification before it can be listed.</h3>
+                <h3>Each endpoint must pass verification before it can be listed.</h3>
                 <ul className="note-list note-list-plain">
                   <li>x402 endpoints must return HTTP 402 with a <code>payment-required</code> header.</li>
                   <li>MPP charge endpoints must return HTTP 402 with <code>method="stellar"</code> and <code>intent="charge"</code>.</li>
@@ -507,11 +544,11 @@ check_reputation(serviceId)`}</code></pre>
               <aside className="register-notes">
                 <article className="note-card">
                   <p className="pane-label">Implementation guide</p>
-                  <h3>What to implement in your own service.</h3>
+                  <h3>What to expose in your own provider API.</h3>
                   <pre className="code-block"><code>{`POST /x402/your-capability
 POST /mpp/charge/your-capability
 POST /mpp/channel/your-capability`}</code></pre>
-                  <p>Publish at least one paid route, then register the service with the matching payment methods and provider endpoints.</p>
+                  <p>Publish at least one paid route, then register the service with matching payment methods and provider endpoints.</p>
                 </article>
               </aside>
             </div>
@@ -551,11 +588,11 @@ POST /mpp/channel/your-capability`}</code></pre>
               <aside className="register-notes">
                 <article className="note-card">
                   <p className="pane-label">What happens next</p>
-                  <h3>Approved services become discoverable across the network.</h3>
+                  <h3>Approved services become discoverable across StellarMesh.</h3>
                   <ul className="note-list">
                     <li>Your service is added to the marketplace catalog.</li>
                     <li>Agents can discover it by capability and price.</li>
-                    <li>Agent access and rating events start feeding activity and reputation signals.</li>
+                    <li>Access events and reputation updates begin feeding network activity and trust signals.</li>
                   </ul>
                 </article>
               </aside>
