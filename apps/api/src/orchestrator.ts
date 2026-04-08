@@ -41,14 +41,6 @@ export async function hireService(request: HireRequest): Promise<HireResult> {
     channelUpgradeThreshold: 4,
   });
 
-  if (decision.method === "mpp" && !state.activeChannel) {
-    state.activeChannel = {
-      openedAt: nowIso(),
-      reference: buildChannelReference(request.sessionId, request.serviceId),
-    };
-  }
-  sessionState.set(key, state);
-
   await appendActivity({
     type: "payment.routed",
     serviceId: request.serviceId,
@@ -64,43 +56,69 @@ export async function hireService(request: HireRequest): Promise<HireResult> {
   });
 
   const endpoints = (service.metadata.endpoints ?? {}) as Record<string, string>;
-  const result = await executePaidCall(decision.method, endpoints, service.endpointUrl, request.taskPayload);
-  const settlementReference =
-    decision.method === "mpp"
-      ? state.activeChannel?.reference ?? buildChannelReference(request.sessionId, request.serviceId)
-      : `x402-${request.serviceId}-${request.sessionId}-${state.callCount}`;
+  try {
+    const result = await executePaidCall(decision.method, endpoints, service.endpointUrl, request.taskPayload);
 
-  await appendActivity({
-    type: "service.hired",
-    serviceId: request.serviceId,
-    sessionId: request.sessionId,
-    paymentMethod: decision.method,
-    amountUsd: service.priceUsd,
-    status: "success",
-    message: `${service.name} completed a paid request.`,
-  });
+    if (decision.method === "mpp" && !state.activeChannel) {
+      state.activeChannel = {
+        openedAt: nowIso(),
+        reference: buildChannelReference(request.sessionId, request.serviceId),
+      };
+    }
+    sessionState.set(key, state);
 
-  await appendActivity({
-    type: "payment.settled",
-    serviceId: request.serviceId,
-    sessionId: request.sessionId,
-    paymentMethod: decision.method,
-    amountUsd: service.priceUsd,
-    status: "success",
-    message: `Settlement recorded with ${decision.method.toUpperCase()} reference ${settlementReference}.`,
-  });
+    const settlementReference =
+      decision.method === "mpp"
+        ? state.activeChannel?.reference ?? buildChannelReference(request.sessionId, request.serviceId)
+        : `x402-${request.serviceId}-${request.sessionId}-${state.callCount}`;
 
-  await updateReputation(request.serviceId, "success", service.priceUsd);
+    await appendActivity({
+      type: "service.hired",
+      serviceId: request.serviceId,
+      sessionId: request.sessionId,
+      paymentMethod: decision.method,
+      amountUsd: service.priceUsd,
+      status: "success",
+      message: `${service.name} completed a paid request.`,
+    });
 
-  return {
-    serviceId: request.serviceId,
-    serviceName: service.name,
-    method: decision.method,
-    reason: decision.reason,
-    settlementReference,
-    callCount: state.callCount,
-    result,
-  };
+    await appendActivity({
+      type: "payment.settled",
+      serviceId: request.serviceId,
+      sessionId: request.sessionId,
+      paymentMethod: decision.method,
+      amountUsd: service.priceUsd,
+      status: "success",
+      message: `Settlement recorded with ${decision.method.toUpperCase()} reference ${settlementReference}.`,
+    });
+
+    await updateReputation(request.serviceId, "success", service.priceUsd);
+
+    return {
+      serviceId: request.serviceId,
+      serviceName: service.name,
+      method: decision.method,
+      reason: decision.reason,
+      settlementReference,
+      callCount: state.callCount,
+      result,
+    };
+  } catch (error) {
+    await appendActivity({
+      type: "payment.settled",
+      serviceId: request.serviceId,
+      sessionId: request.sessionId,
+      paymentMethod: decision.method,
+      amountUsd: service.priceUsd,
+      status: "failed",
+      message: `Settlement failed for ${service.name}.`,
+      metadata: {
+        reason: error instanceof Error ? error.message : String(error),
+      },
+    });
+    await updateReputation(request.serviceId, "failed", service.priceUsd);
+    throw error;
+  }
 }
 
 async function executePaidCall(

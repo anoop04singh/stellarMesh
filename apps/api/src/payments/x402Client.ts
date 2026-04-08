@@ -56,7 +56,10 @@ export async function fetchViaX402(url: string, body: Record<string, unknown>) {
   }
 
   if (!response.ok) {
-    throw new Error(`x402 paid request failed with status ${response.status}`);
+    const errorBody = await response.text().catch(() => "");
+    throw new Error(
+      `x402 paid request failed with status ${response.status}${errorBody ? `: ${errorBody}` : ""}`,
+    );
   }
 
   return response.json();

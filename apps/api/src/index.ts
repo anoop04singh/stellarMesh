@@ -2,17 +2,14 @@ import cors from "cors";
 import express from "express";
 import { z } from "zod";
 import { readDb } from "./db.js";
-import { hireService } from "./orchestrator.js";
 import { getService, listServices, registerService, updateReputation } from "./registry.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const hireSchema = z.object({
-  serviceId: z.string().min(3),
-  sessionId: z.string().min(3),
-  taskPayload: z.record(z.string(), z.unknown()),
+const accessQuerySchema = z.object({
+  usage: z.enum(["single", "repeat"]).optional(),
 });
 
 const rateSchema = z.object({
@@ -61,6 +58,51 @@ app.get("/services/:id", async (req, res, next) => {
   }
 });
 
+app.get("/services/:id/access", async (req, res, next) => {
+  try {
+    const query = accessQuerySchema.parse(req.query);
+    const service = await getService(req.params.id);
+    if (!service) {
+      res.status(404).json({ error: "Service not found." });
+      return;
+    }
+
+    const endpoints = ((service.metadata?.endpoints ?? {}) as Record<string, string>);
+    const recommendedPaymentMethod =
+      query.usage === "repeat" && (endpoints.mppChannel || endpoints.mppCharge)
+        ? "mpp"
+        : service.paymentMethods.includes("x402")
+          ? "x402"
+          : service.paymentMethods[0];
+
+    res.json({
+      service,
+      access: {
+        walletOwner: "agent",
+        paymentResponsibility: "The agent or agent operator pays directly from its own Stellar wallet.",
+        facilitator: {
+          url: "https://channels.openzeppelin.com/x402/testnet",
+          note: "This is the default hosted Stellar x402 facilitator used by providers unless they self-host.",
+        },
+        recommendedPaymentMethod,
+        supportedPaymentMethods: service.paymentMethods,
+        endpoints: {
+          x402: endpoints.x402 ?? null,
+          mppCharge: endpoints.mppCharge ?? null,
+          mppChannel: endpoints.mppChannel ?? null,
+        },
+        purchaseSteps: [
+          "Choose a provider endpoint that matches the task and payment method.",
+          "Call the protected endpoint from an x402- or MPP-capable client using the agent's own wallet.",
+          "Handle the 402 payment challenge and resubmit the request with the wallet-generated payment proof.",
+        ],
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post("/services/:id/rate", async (req, res, next) => {
   try {
     const payload = rateSchema.parse(req.body);
@@ -70,16 +112,6 @@ app.post("/services/:id/rate", async (req, res, next) => {
       return;
     }
     res.json({ reputation });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post("/hire", async (req, res, next) => {
-  try {
-    const payload = hireSchema.parse(req.body);
-    const result = await hireService(payload);
-    res.json(result);
   } catch (error) {
     next(error);
   }

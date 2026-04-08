@@ -12,7 +12,8 @@ app.use(helmet());
 app.use(express.json());
 
 const providerAddress = process.env.INFERENCE_PROVIDER_PUBLIC;
-const facilitatorUrl = process.env.X402_FACILITATOR_URL ?? "http://localhost:4022";
+const facilitatorUrl = process.env.X402_FACILITATOR_URL ?? "https://channels.openzeppelin.com/x402/testnet";
+const facilitatorApiKey = process.env.X402_FACILITATOR_API_KEY;
 
 if (!providerAddress) {
   throw new Error("Missing INFERENCE_PROVIDER_PUBLIC");
@@ -30,7 +31,16 @@ app.use(
         },
       },
     },
-    new HTTPFacilitatorClient({ url: facilitatorUrl }),
+    new HTTPFacilitatorClient({
+      url: facilitatorUrl,
+      createAuthHeaders: facilitatorApiKey
+        ? async () => ({
+            supported: { Authorization: `Bearer ${facilitatorApiKey}` },
+            verify: { Authorization: `Bearer ${facilitatorApiKey}` },
+            settle: { Authorization: `Bearer ${facilitatorApiKey}` },
+          })
+        : undefined,
+    }),
     [{ network: "stellar:testnet", server: new ExactStellarScheme() }],
   ),
 );
@@ -43,6 +53,10 @@ app.post("/x402/infer", (req, res) => {
     summary: text.length > 120 ? `${text.slice(0, 117)}...` : text,
     label: text.toLowerCase().includes("urgent") ? "priority" : "normal",
   });
+});
+
+app.get("/health", (_req, res) => {
+  res.json({ name: "mesh-inference", status: "ok" });
 });
 
 const port = Number(process.env.PORT ?? 4103);

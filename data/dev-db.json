@@ -112,6 +112,111 @@
   },
   "activity": [
     {
+      "id": "1775635955365-fj9g6g",
+      "createdAt": "2026-04-08T08:12:35.365Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "local-fix-search",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 5,
+        "reason": "Active MPP channel already exists for this session."
+      }
+    },
+    {
+      "id": "1775635954543-9x0rg4",
+      "createdAt": "2026-04-08T08:12:34.543Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "local-fix-search",
+      "paymentMethod": "mpp",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected MPP for Atlas Search.",
+      "metadata": {
+        "callCount": 4,
+        "reason": "Repeated calls crossed the session threshold, so MPP is cheaper than per-request x402."
+      }
+    },
+    {
+      "id": "1775635954233-cp19au",
+      "createdAt": "2026-04-08T08:12:34.233Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "local-fix-search",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 3,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775635953391-z19m0w",
+      "createdAt": "2026-04-08T08:12:33.391Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "local-fix-search",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 2,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775635952355-jh4s33",
+      "createdAt": "2026-04-08T08:12:32.355Z",
+      "type": "payment.routed",
+      "serviceId": "svc-search-brave",
+      "sessionId": "local-fix-search",
+      "paymentMethod": "x402",
+      "amountUsd": 0.02,
+      "status": "success",
+      "message": "Payment router selected X402 for Atlas Search.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775635952316-0vasal",
+      "createdAt": "2026-04-08T08:12:32.316Z",
+      "type": "payment.routed",
+      "serviceId": "svc-inference-haiku",
+      "sessionId": "local-fix-inference",
+      "paymentMethod": "x402",
+      "amountUsd": 0.03,
+      "status": "success",
+      "message": "Payment router selected X402 for Mesh Inference.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
+      "id": "1775635952297-l4js8v",
+      "createdAt": "2026-04-08T08:12:32.297Z",
+      "type": "payment.routed",
+      "serviceId": "svc-weather-pulse",
+      "sessionId": "local-fix-weather",
+      "paymentMethod": "x402",
+      "amountUsd": 0.01,
+      "status": "success",
+      "message": "Payment router selected X402 for Sky Pulse.",
+      "metadata": {
+        "callCount": 1,
+        "reason": "Defaulting to per-request settlement until the repeated-call threshold is reached."
+      }
+    },
+    {
       "id": "1775150361841-5f7kye",
       "createdAt": "2026-04-02T17:19:21.841Z",
       "type": "reputation.updated",

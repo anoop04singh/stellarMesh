@@ -15,7 +15,8 @@ app.use(helmet());
 app.use(express.json());
 
 const providerAddress = process.env.WEATHER_PROVIDER_PUBLIC;
-const facilitatorUrl = process.env.X402_FACILITATOR_URL ?? "http://localhost:4022";
+const facilitatorUrl = process.env.X402_FACILITATOR_URL ?? "https://channels.openzeppelin.com/x402/testnet";
+const facilitatorApiKey = process.env.X402_FACILITATOR_API_KEY;
 const mppSecret = process.env.MPP_SECRET_KEY;
 
 if (!providerAddress || !mppSecret) {
@@ -34,7 +35,16 @@ app.use(
         },
       },
     },
-    new HTTPFacilitatorClient({ url: facilitatorUrl }),
+    new HTTPFacilitatorClient({
+      url: facilitatorUrl,
+      createAuthHeaders: facilitatorApiKey
+        ? async () => ({
+            supported: { Authorization: `Bearer ${facilitatorApiKey}` },
+            verify: { Authorization: `Bearer ${facilitatorApiKey}` },
+            settle: { Authorization: `Bearer ${facilitatorApiKey}` },
+          })
+        : undefined,
+    }),
     [{ network: "stellar:testnet", server: new ExactStellarScheme() }],
   ),
 );
@@ -68,6 +78,10 @@ function buildForecast(location: string, method: string) {
 app.post("/x402/weather", (req, res) => {
   const location = String(req.body.location ?? "Bengaluru");
   res.json(buildForecast(location, "x402"));
+});
+
+app.get("/health", (_req, res) => {
+  res.json({ name: "sky-pulse", status: "ok" });
 });
 
 app.post("/mpp/charge/weather", async (req, res) => {

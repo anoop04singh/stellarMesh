@@ -43,7 +43,10 @@ export async function fetchViaMppCharge(url: string, body: Record<string, unknow
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    throw new Error(`MPP charge request failed with status ${response.status}`);
+    const errorBody = await response.text().catch(() => "");
+    throw new Error(
+      `MPP charge request failed with status ${response.status}${errorBody ? `: ${errorBody}` : ""}`,
+    );
   }
   return response.json();
 }
@@ -58,7 +61,10 @@ export async function fetchViaMppChannel(url: string, body: Record<string, unkno
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    throw new Error(`MPP channel request failed with status ${response.status}`);
+    const errorBody = await response.text().catch(() => "");
+    throw new Error(
+      `MPP channel request failed with status ${response.status}${errorBody ? `: ${errorBody}` : ""}`,
+    );
   }
   return response.json();
 }

@@ -15,7 +15,8 @@ app.use(helmet());
 app.use(express.json());
 
 const providerAddress = process.env.SEARCH_PROVIDER_PUBLIC;
-const facilitatorUrl = process.env.X402_FACILITATOR_URL ?? "http://localhost:4022";
+const facilitatorUrl = process.env.X402_FACILITATOR_URL ?? "https://channels.openzeppelin.com/x402/testnet";
+const facilitatorApiKey = process.env.X402_FACILITATOR_API_KEY;
 const channelContract = process.env.SEARCH_CHANNEL_CONTRACT;
 const commitmentPubkey = process.env.COMMITMENT_PUBLIC_HEX;
 const mppSecret = process.env.MPP_SECRET_KEY;
@@ -39,7 +40,16 @@ app.use(
         },
       },
     },
-    new HTTPFacilitatorClient({ url: facilitatorUrl }),
+    new HTTPFacilitatorClient({
+      url: facilitatorUrl,
+      createAuthHeaders: facilitatorApiKey
+        ? async () => ({
+            supported: { Authorization: `Bearer ${facilitatorApiKey}` },
+            verify: { Authorization: `Bearer ${facilitatorApiKey}` },
+            settle: { Authorization: `Bearer ${facilitatorApiKey}` },
+          })
+        : undefined,
+    }),
     [{ network: "stellar:testnet", server: new ExactStellarScheme() }],
   ),
 );
@@ -79,6 +89,10 @@ function buildSearchResults(query: string, method: string) {
 app.post("/x402/search", (req, res) => {
   const query = String(req.body.query ?? "unknown topic");
   res.json(buildSearchResults(query, "x402"));
+});
+
+app.get("/health", (_req, res) => {
+  res.json({ name: "atlas-search", status: "ok" });
 });
 
 app.post("/mpp/channel/search", async (req, res) => {
