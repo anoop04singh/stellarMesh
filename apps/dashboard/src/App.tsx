@@ -12,6 +12,7 @@ const apiBaseUrl = import.meta.env.VITE_STELLARMESH_API_URL ?? "http://localhost
 const skillDownloadUrl = "/skills/stellarmesh-agent-skill.md";
 const mppSkillDownloadUrl = "/skills/stellarmesh-mpp-channel-skill.md";
 const githubRepoUrl = "https://github.com/anoop04singh/stellarMesh";
+const githubProfileUrl = "https://github.com/anoop04singh";
 
 async function getJson<T>(pathname: string): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${pathname}`);
@@ -152,10 +153,7 @@ export function App() {
         <div className="nav">
           <a className="brand" href="#top">
             <span className="brand-logo">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="5" stroke="white" strokeWidth="1.5" />
-                <path d="M8 3 L8 13 M3 8 L13 8" stroke="white" strokeWidth="1.5" />
-              </svg>
+              <img src="/smesh-star.png" alt="StellarMesh icon" />
             </span>
             <span className="brand-mark">StellarMesh</span>
           </a>
@@ -601,6 +599,10 @@ POST /mpp/channel/your-capability`}</code></pre>
         </div>
 
         <div className="section-divider" />
+        <footer className="site-footer">
+          <p>made with love by anoop &lt;3</p>
+          <a href={githubProfileUrl} target="_blank" rel="noreferrer">github.com/anoop04singh</a>
+        </footer>
       </main>
     </div>
   );
